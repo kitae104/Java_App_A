@@ -3,6 +3,7 @@ package basic.classes;
 public class Name {
 	private String firstName;   // 성 
 	private String lastName; 	// 이름
+	private int a;
 	
 	public Name(String firstName, String lastName) {
 		super();
@@ -29,6 +30,14 @@ public class Name {
 	@Override
 	public String toString() {
 		return "Name [firstName=" + firstName + ", lastName=" + lastName + "]";
+	}
+	
+	public void test() {
+		a = 10;
+	}
+	
+	public void test2() {
+		System.out.println(a);
 	}
 	
 	

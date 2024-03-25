@@ -7,7 +7,7 @@ public class Main {
 		Shape s = new Shape();
 		s.draw();
 		
-		s = new Line();
+		s = new Line();			// upcast
 		s.draw();
 		
 		s = new Circle();
@@ -16,6 +16,8 @@ public class Main {
 		s = new Rect();
 		s.draw();
 
+		
+		
 	}
 
 }

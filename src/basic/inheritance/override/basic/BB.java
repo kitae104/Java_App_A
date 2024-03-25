@@ -1,5 +1,5 @@
 package basic.inheritance.override.basic;
 
-public class BB {
+public class BB extends AA{
 
 }
