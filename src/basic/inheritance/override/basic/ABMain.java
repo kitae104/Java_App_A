@@ -19,6 +19,7 @@ public class ABMain {
 		a.sort();
 		
 		B b = new B();
+		
 		b.sort();
 		b.test();
 	}

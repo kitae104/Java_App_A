@@ -7,5 +7,5 @@ public class B extends A {
 	
 	public void sort() {
 		System.out.println("1초");
-	}
+	}	
 }
