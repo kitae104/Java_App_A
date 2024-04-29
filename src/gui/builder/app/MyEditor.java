@@ -7,6 +7,8 @@ import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.Font;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -15,13 +17,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class MyEditor {
 
 	private JFrame frmMyeditorVer;
+	private JTextArea ta;
 	
 	private final int EXIT_SUCCESS = 0;
 	
@@ -64,8 +73,8 @@ public class MyEditor {
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		frmMyeditorVer.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
-		JTextArea ta = new JTextArea();
-		ta.setFont(new Font("Monospaced", Font.PLAIN, 20));
+		ta = new JTextArea();
+		ta.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		ta.setLineWrap(true);
 		scrollPane.setViewportView(ta);
 		
@@ -84,6 +93,11 @@ public class MyEditor {
 		toolBar.addSeparator();
 		
 		JButton btnNewButton_1 = new JButton("");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				openAction();
+			}			
+		});
 		btnNewButton_1.setIcon(new ImageIcon(MyEditor.class.getResource("/gui/builder/images/open.png")));
 		toolBar.add(btnNewButton_1);
 		
@@ -160,6 +174,44 @@ public class MyEditor {
 				"정말 끝낼까요?", "종료 확인", 
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 			System.exit(EXIT_SUCCESS);
+		}
+	}
+	
+	private void openAction() {		
+		JFileChooser fc = new JFileChooser();
+		
+		File currentDirectory = new File("./src/basic/classes");
+		fc.setCurrentDirectory(currentDirectory);
+		
+		fc.addChoosableFileFilter(new FileNameExtensionFilter("Java", "java"));
+		fc.addChoosableFileFilter(new FileNameExtensionFilter("Text", "txt"));
+		fc.setAcceptAllFileFilterUsed(true);
+		
+		fc.showOpenDialog(frmMyeditorVer);
+		
+		File in = fc.getSelectedFile();
+		BufferedReader br = null;
+		try {
+			 br = new BufferedReader(new FileReader(in));
+			 String line = null;
+			 while((line = br.readLine()) != null) {
+				 ta.append(line + "\n");
+			 }	 
+			 
+		} catch (FileNotFoundException e) {
+			System.out.println("파일 접근시 오류 발생");
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("입출력시 오류 발생");
+			e.printStackTrace();
+		} finally {
+			if(br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }
