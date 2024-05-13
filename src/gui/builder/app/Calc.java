@@ -7,14 +7,17 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Calc {
 
 	private JFrame frame;
-	private JTextField textField;
+	private JTextField tfNum;
 	private JButton btnNewButton_2;
 	private JButton btnNewButton_3;
 	private JButton btnNewButton_4;
@@ -32,6 +35,9 @@ public class Calc {
 	private JButton btnNewButton_16;
 	private JButton btnNewButton_17;
 
+	private double num1 = 0;
+	private double num2 = 0;
+	private String op = "";
 	/**
 	 * Launch the application.
 	 */
@@ -40,6 +46,7 @@ public class Calc {
 			public void run() {
 				try {
 					Calc window = new Calc();
+					window.frame.setLocation(2800, 200);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -65,18 +72,31 @@ public class Calc {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(12, 10, 428, 51);
-		frame.getContentPane().add(textField);
-		textField.setColumns(10);
+		tfNum = new JTextField();
+		tfNum.setFont(new Font("굴림", Font.PLAIN, 18));
+		tfNum.setHorizontalAlignment(SwingConstants.RIGHT);
+		tfNum.setBounds(12, 10, 428, 51);
+		frame.getContentPane().add(tfNum);
+		tfNum.setColumns(10);
 		
 		JButton btnNewButton = new JButton("DEL");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText("");
+			}
+		});
 		btnNewButton.setForeground(Color.WHITE);
 		btnNewButton.setBackground(Color.DARK_GRAY);
 		btnNewButton.setBounds(12, 71, 63, 113);
 		frame.getContentPane().add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("C");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String str = tfNum.getText();
+				tfNum.setText(str.substring(0, str.length()-1));
+			}
+		});
 		btnNewButton_1.setBackground(Color.DARK_GRAY);
 		btnNewButton_1.setForeground(Color.WHITE);
 		btnNewButton_1.setBounds(12, 194, 63, 106);
@@ -101,60 +121,110 @@ public class Calc {
 		frame.getContentPane().add(btnNewButton_4);
 		
 		btnNewButton_5 = new JButton("7");
+		btnNewButton_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "7");
+			}
+		});
 		btnNewButton_5.setBackground(Color.BLACK);
 		btnNewButton_5.setForeground(Color.WHITE);
 		btnNewButton_5.setBounds(157, 71, 63, 51);
 		frame.getContentPane().add(btnNewButton_5);
 		
 		btnNewButton_6 = new JButton("8");
+		btnNewButton_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "8");
+			}
+		});
 		btnNewButton_6.setBackground(Color.BLACK);
 		btnNewButton_6.setForeground(Color.WHITE);
 		btnNewButton_6.setBounds(232, 71, 63, 51);
 		frame.getContentPane().add(btnNewButton_6);
 		
 		btnNewButton_7 = new JButton("9");
+		btnNewButton_7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "9");
+			}
+		});
 		btnNewButton_7.setBackground(Color.BLACK);
 		btnNewButton_7.setForeground(Color.WHITE);
 		btnNewButton_7.setBounds(307, 71, 63, 51);
 		frame.getContentPane().add(btnNewButton_7);
 		
 		btnNewButton_8 = new JButton("4");
+		btnNewButton_8.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "4");
+			}
+		});
 		btnNewButton_8.setBackground(Color.BLACK);
 		btnNewButton_8.setForeground(Color.WHITE);
 		btnNewButton_8.setBounds(157, 132, 63, 51);
 		frame.getContentPane().add(btnNewButton_8);
 		
 		btnNewButton_9 = new JButton("5");
+		btnNewButton_9.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "5");
+			}
+		});
 		btnNewButton_9.setBackground(Color.BLACK);
 		btnNewButton_9.setForeground(Color.WHITE);
 		btnNewButton_9.setBounds(232, 133, 63, 51);
 		frame.getContentPane().add(btnNewButton_9);
 		
 		btnNewButton_10 = new JButton("6");
+		btnNewButton_10.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "6");
+			}
+		});
 		btnNewButton_10.setBackground(Color.BLACK);
 		btnNewButton_10.setForeground(Color.WHITE);
 		btnNewButton_10.setBounds(307, 133, 63, 51);
 		frame.getContentPane().add(btnNewButton_10);
 		
 		btnNewButton_11 = new JButton("1");
+		btnNewButton_11.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "1");
+			}
+		});
 		btnNewButton_11.setBackground(Color.BLACK);
 		btnNewButton_11.setForeground(Color.WHITE);
 		btnNewButton_11.setBounds(157, 194, 63, 51);
 		frame.getContentPane().add(btnNewButton_11);
 		
 		btnNewButton_12 = new JButton("2");
+		btnNewButton_12.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "2");
+			}
+		});
 		btnNewButton_12.setBackground(Color.BLACK);
 		btnNewButton_12.setForeground(Color.WHITE);
 		btnNewButton_12.setBounds(232, 194, 63, 51);
 		frame.getContentPane().add(btnNewButton_12);
 		
 		btnNewButton_13 = new JButton("3");
+		btnNewButton_13.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "3");
+			}
+		});
 		btnNewButton_13.setBackground(Color.BLACK);
 		btnNewButton_13.setForeground(Color.WHITE);
 		btnNewButton_13.setBounds(307, 194, 63, 51);
 		frame.getContentPane().add(btnNewButton_13);
 		
 		btnNewButton_14 = new JButton("0");
+		btnNewButton_14.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfNum.setText(tfNum.getText() + "0");
+			}
+		});
 		btnNewButton_14.setBackground(Color.BLACK);
 		btnNewButton_14.setForeground(Color.WHITE);
 		btnNewButton_14.setBounds(157, 249, 138, 51);
@@ -162,19 +232,47 @@ public class Calc {
 		
 		btnNewButton_15 = new JButton(".");
 		btnNewButton_15.setBackground(Color.ORANGE);
-		btnNewButton_15.setForeground(Color.WHITE);
+		btnNewButton_15.setForeground(new Color(0, 0, 0));
 		btnNewButton_15.setBounds(307, 249, 63, 51);
 		frame.getContentPane().add(btnNewButton_15);
 		
 		btnNewButton_16 = new JButton("+");
+		btnNewButton_16.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				num1 = Double.parseDouble(tfNum.getText());
+				tfNum.setText("");
+				op = "+";
+			}
+		});
 		btnNewButton_16.setBackground(Color.GRAY);
 		btnNewButton_16.setForeground(Color.WHITE);
 		btnNewButton_16.setBounds(377, 71, 63, 113);
 		frame.getContentPane().add(btnNewButton_16);
 		
 		btnNewButton_17 = new JButton("=");
+		btnNewButton_17.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				num2 = Double.parseDouble(tfNum.getText());
+				double result = 0;
+				
+				if(op.equals("+")) {
+					result = num1 + num2;
+				} else if (op.equals("-")){
+					result = num1 - num2;
+				} else if (op.equals("*")){
+					result = num1 * num2;
+				} else if (op.equals("/")){
+					result = num1 / num2;
+				} else {
+					JOptionPane.showMessageDialog(frame, "잘못된 연산 입니다.");
+				}
+				
+				tfNum.setText(result + "");
+				op = null;
+			}
+		});
 		btnNewButton_17.setBackground(Color.YELLOW);
-		btnNewButton_17.setForeground(Color.WHITE);
+		btnNewButton_17.setForeground(new Color(0, 0, 0));
 		btnNewButton_17.setBounds(377, 194, 63, 106);
 		frame.getContentPane().add(btnNewButton_17);
 		
