@@ -68,8 +68,7 @@ public class Calc {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("계산기");
-		frame.setBounds(100, 100, 465, 437);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setBounds(100, 100, 465, 437);		
 		frame.getContentPane().setLayout(null);
 		
 		tfNum = new JTextField();
@@ -282,4 +281,10 @@ public class Calc {
 		lblNewLabel.setBounds(12, 324, 428, 51);
 		frame.getContentPane().add(lblNewLabel);
 	}
+
+	public JFrame getFrame() {
+		return frame;
+	}
+	
+	
 }

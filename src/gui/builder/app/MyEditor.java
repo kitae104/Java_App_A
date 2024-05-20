@@ -156,6 +156,16 @@ public class MyEditor {
 		JMenu mnNewMenu_1 = new JMenu("Edit");
 		menuBar.add(mnNewMenu_1);
 		
+		JMenuItem mntmNewMenuItem_5 = new JMenuItem("계산기");
+		mntmNewMenuItem_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Calc calc = new Calc();
+				calc.getFrame().setLocation(2800, 200);
+				calc.getFrame().setVisible(true);
+			}
+		});
+		mnNewMenu_1.add(mntmNewMenuItem_5);
+		
 		JMenu mnNewMenu_2 = new JMenu("info");
 		menuBar.add(mnNewMenu_2);
 		

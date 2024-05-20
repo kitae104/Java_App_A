@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.swing.JOptionPane;
+
 public class DBConnection {
 
 	public static void main(String[] args) {
@@ -18,15 +20,34 @@ public class DBConnection {
 			
 			Statement stmt = conn.createStatement();    // 쿼리를 할 수 있는 문장준비 
 			
+			// insert 
+//			String sql = "INSERT INTO student (id, name, dept, grade) "
+//					+ "VALUES('3333333', '이길동', '수학과', 2);";
+			
+			String input = JOptionPane.showInputDialog("id를 입력하세요."); //"4444444"
+			
+//			String sql = "UPDATE student "
+//					+ "SET name='테스터2', dept='테스팅학과2', grade=4 "
+//					+ "WHERE id='" + input + "'";
+			
+			String sql = "DELETE FROM student "
+					+ "WHERE id='" + input + "'";
+			
+			System.out.println(sql);
+			
+			int cnt = stmt.executeUpdate(sql);
+			
+			// select 
 			ResultSet rs = stmt.executeQuery("SELECT * FROM student");
-			System.out.println("학번" + "\t" + "이름" + "\t" + "학과" + "\t\t" + "학년");
+			System.out.println("학번" + "\t" + "이름" + "\t" + "학년" + "\t" + "학과");
+			
 			while(rs.next()) {
 				String id = rs.getString("id");
 				String name = rs.getString("name");
 				String dept = rs.getString("dept");
 				String grade = rs.getString("grade");
 				
-				System.out.println(id + "\t" + name + "\t" + dept + "\t" + grade);
+				System.out.println(id + "\t" + name + "\t" + grade + "\t" + dept);
 				
 				
 			}
