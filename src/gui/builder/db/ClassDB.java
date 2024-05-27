@@ -201,7 +201,7 @@ public class ClassDB extends JFrame {
 		int columnCount = metaData.getColumnCount();
 		
 		for (int i = 1; i <= columnCount; i++) {
-			columnNames.add(metaData.getColumnClassName(i));
+			columnNames.add(metaData.getColumnName(i));
 		}
 		
 		for(String name : columnNames) {
