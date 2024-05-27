@@ -5,9 +5,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+
 import java.awt.Choice;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -24,22 +25,31 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ClassDB extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
+	private JTextField tfSearch;
+	private JTextField tfID;
+	private JTextField tfUsername;
+	private JTextField tfPassword;
+	private JTextField tfAge;
+	private JTextField tfDept;
+	private JTextField tfGrade;
 	private JTextField textField_7;
 	private JTable table;
 	private Connection conn = null;
-
+	private final DefaultTableModel tableModel = new DefaultTableModel();
+	private JComboBox cbCategory;
+	private JComboBox cbName;
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -73,10 +83,33 @@ public class ClassDB extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(116, 23, 219, 21);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		tfSearch = new JTextField();
+		tfSearch.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
+				try {
+					String category = (String) cbCategory.getSelectedItem();
+					String search = tfSearch.getText();
+					String sql = "SELECT * FROM student_info where " + category + " like ?";
+					PreparedStatement pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, "%" + search + "%");
+					
+					ResultSet rs = pstmt.executeQuery();
+					
+					setTableFromDB(rs);
+					
+					pstmt.close();
+					rs.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		tfSearch.setBounds(116, 23, 219, 21);
+		contentPane.add(tfSearch);
+		tfSearch.setColumns(10);
 		
 		JButton btnNewButton = new JButton("Search");
 		btnNewButton.setBounds(359, 23, 93, 23);
@@ -85,22 +118,8 @@ public class ClassDB extends JFrame {
 		JButton btnNewButton_1 = new JButton("Load Data");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					String sql = "SELECT * FROM student_info";
-					PreparedStatement pstmt = conn.prepareStatement(sql);
-					ResultSet rs = pstmt.executeQuery();
-					
-					setTableFromDB(rs);
-					pstmt.close();
-					rs.close();				
-					
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-
-			
+				refreshTable();
+			}			
 		});
 		btnNewButton_1.setBounds(462, 23, 93, 23);
 		contentPane.add(btnNewButton_1);
@@ -130,55 +149,138 @@ public class ClassDB extends JFrame {
 		contentPane.add(lblGrade);
 		
 		JButton btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					String sql = "INSERT INTO student_info "
+							+ "(username, password, age, dept, grade) "
+							+ "VALUES(?, ?, ?, ?, ?)";
+					PreparedStatement pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, tfUsername.getText());
+					pstmt.setString(2, tfPassword.getText());
+					pstmt.setInt(3, Integer.parseInt(tfAge.getText()));
+					pstmt.setString(4, tfDept.getText());
+					pstmt.setString(5, tfGrade.getText());
+					
+					pstmt.execute();
+					
+					JOptionPane.showMessageDialog(contentPane, "Data Saved");
+					
+					pstmt.close();
+				} catch (SQLException e1) {
+					
+					e1.printStackTrace();
+				}
+				
+				refreshTable();
+				fillCombo();
+			}
+		});
 		btnSave.setBounds(10, 249, 76, 23);
 		contentPane.add(btnSave);
 		
 		JButton btnUpdata = new JButton("Update");
+		btnUpdata.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				try {
+					String sql = "UPDATE student_info "
+							+ "SET username=?, password=?, age=?, dept=?, grade=?"
+							+ "WHERE id=?";
+					PreparedStatement pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, tfUsername.getText());
+					pstmt.setString(2, tfPassword.getText());
+					pstmt.setInt(3, Integer.parseInt(tfAge.getText()));
+					pstmt.setString(4, tfDept.getText());
+					pstmt.setString(5, tfGrade.getText());
+					pstmt.setString(6, tfID.getText());
+					pstmt.execute();
+					
+					JOptionPane.showMessageDialog(contentPane, "Data Updated");
+					
+					pstmt.close();
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				refreshTable();
+			}
+		});
 		btnUpdata.setBounds(10, 278, 76, 23);
 		contentPane.add(btnUpdata);
 		
-		JButton btnDeleat = new JButton("Deleat");
+		JButton btnDeleat = new JButton("Delete");
+		btnDeleat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String sql = "DELETE FROM java_a.student_info "
+							+ "WHERE id=?";
+					PreparedStatement pstmt = conn.prepareStatement(sql);					
+					pstmt.setString(1, tfID.getText());
+					pstmt.execute();
+					
+					JOptionPane.showMessageDialog(contentPane, "Data Deleted");
+					
+					pstmt.close();
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				refreshTable();
+			}
+		});
 		btnDeleat.setBounds(10, 311, 76, 23);
 		contentPane.add(btnDeleat);
 		
-		textField_1 = new JTextField();
-		textField_1.setEnabled(false);
-		textField_1.setColumns(10);
-		textField_1.setBounds(96, 88, 100, 21);
-		contentPane.add(textField_1);
+		tfID = new JTextField();
+		tfID.setEnabled(false);
+		tfID.setColumns(10);
+		tfID.setBounds(96, 88, 100, 21);
+		contentPane.add(tfID);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(96, 118, 100, 21);
-		contentPane.add(textField_2);
+		tfUsername = new JTextField();
+		tfUsername.setColumns(10);
+		tfUsername.setBounds(96, 118, 100, 21);
+		contentPane.add(tfUsername);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(96, 143, 100, 21);
-		contentPane.add(textField_3);
+		tfPassword = new JTextField();
+		tfPassword.setColumns(10);
+		tfPassword.setBounds(96, 143, 100, 21);
+		contentPane.add(tfPassword);
 		
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBounds(96, 168, 100, 21);
-		contentPane.add(textField_4);
+		tfAge = new JTextField();
+		tfAge.setColumns(10);
+		tfAge.setBounds(96, 168, 100, 21);
+		contentPane.add(tfAge);
 		
-		textField_5 = new JTextField();
-		textField_5.setColumns(10);
-		textField_5.setBounds(96, 193, 100, 21);
-		contentPane.add(textField_5);
+		tfDept = new JTextField();
+		tfDept.setColumns(10);
+		tfDept.setBounds(96, 193, 100, 21);
+		contentPane.add(tfDept);
 		
-		textField_6 = new JTextField();
-		textField_6.setColumns(10);
-		textField_6.setBounds(96, 218, 100, 21);
-		contentPane.add(textField_6);
+		tfGrade = new JTextField();
+		tfGrade.setColumns(10);
+		tfGrade.setBounds(96, 218, 100, 21);
+		contentPane.add(tfGrade);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(10, 22, 86, 23);
-		contentPane.add(comboBox);
+		cbCategory = new JComboBox();
+		cbCategory.setModel(new DefaultComboBoxModel(new String[] {"id", "username", "password", "age", "dept", "grade"}));
+		cbCategory.setBounds(10, 22, 86, 23);
+		contentPane.add(cbCategory);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(10, 55, 186, 23);
-		contentPane.add(comboBox_1);
+		cbName = new JComboBox();
+		cbName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String username = (String) cbName.getSelectedItem();
+				System.out.println("username : " + username);
+			}
+		});
+		cbName.setBounds(10, 55, 186, 23);
+		contentPane.add(cbName);
 		
 		textField_7 = new JTextField();
 		textField_7.setBounds(100, 250, 96, 161);
@@ -189,14 +291,53 @@ public class ClassDB extends JFrame {
 		scrollPane.setBounds(208, 54, 348, 357);
 		contentPane.add(scrollPane);
 		
-		table = new JTable();
+		table = new JTable(tableModel);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				try {
+					int row = table.getSelectedRow();
+					String id = table.getModel().getValueAt(row, 0).toString();
+					
+					String sql = "SELECT * FROM student_info where id=?";					
+					PreparedStatement pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, id);
+					
+					ResultSet rs = pstmt.executeQuery();
+					
+					while(rs.next()) {
+						tfID.setText(rs.getString("id"));
+						tfUsername.setText(rs.getString("username"));
+						tfPassword.setText(rs.getString("password"));
+						tfAge.setText(rs.getString("age"));
+						tfDept.setText(rs.getString("dept"));
+						tfGrade.setText(rs.getString("grade"));
+					}
+					
+					pstmt.close();
+					rs.close();
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 		scrollPane.setViewportView(table);		
 		
+		refreshTable();
+		fillCombo();
 	}
 	
+	
+
 	private void setTableFromDB(ResultSet rs) throws SQLException {
+		
 		ResultSetMetaData metaData = rs.getMetaData();
 		
+		// 컬럼 정보 
 		Vector<String> columnNames = new Vector<String>();
 		int columnCount = metaData.getColumnCount();
 		
@@ -204,8 +345,53 @@ public class ClassDB extends JFrame {
 			columnNames.add(metaData.getColumnName(i));
 		}
 		
-		for(String name : columnNames) {
-			System.out.println(name);
+		// 데이터  
+		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+		while(rs.next()) {
+			Vector<Object> vec = new Vector<Object>();
+			for (int i = 1; i <= columnCount; i++) {
+				vec.add(rs.getObject(i));
+			}
+			data.add(vec);
+		}
+		
+		tableModel.setDataVector(data, columnNames);
+	}
+	
+	private void refreshTable() {
+		try {
+			String sql = "SELECT * FROM student_info";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			
+			setTableFromDB(rs);
+			pstmt.close();
+			rs.close();				
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
+	private void fillCombo() {
+		cbName.removeAllItems();
+		
+		try {
+			String sql = "SELECT * FROM student_info";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				cbName.addItem(rs.getString("username"));
+			}			
+			
+			pstmt.close();
+			rs.close();				
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
 	}

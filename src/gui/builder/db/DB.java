@@ -17,7 +17,8 @@ public class DB {
 					"jdbc:mysql://localhost:3306/java_a?serverTimezone=UTC", 
 					"root", 
 					"1234");
-			JOptionPane.showMessageDialog(null, "DB 연결 성공");
+//			JOptionPane.showMessageDialog(null, "DB 연결 성공");
+			System.out.println("DB 연결 성공");
 			return conn;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
